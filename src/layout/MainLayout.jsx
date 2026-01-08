@@ -26,6 +26,13 @@ const MainLayout = () => {
           >
             Editor
           </Link>
+
+          <Link
+            className="font-medium text-slate-800 hover:text-blue-600"
+            to={"/weather"}
+          >
+            Weather
+          </Link>
         </div>
       </nav>
 

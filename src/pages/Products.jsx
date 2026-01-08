@@ -1,35 +1,48 @@
 import ProductGrid from "../components/ProductGrid";
+import { useEffect, useState } from "react";
 
-const testProducts = [
-  {
-    id: 1,
-    title: "Blue Hoodie",
-    price: 39.99,
-    category: "Clothing",
-    image: "https://picsum.photos/seed/hoodie/600/400",
-  },
-  {
-    id: 2,
-    title: "Wireless Headphones",
-    price: 79.99,
-    category: "Electronics",
-    image: "https://picsum.photos/seed/headphones/600/400",
-  },
-  {
-    id: 3,
-    title: "Coffee Mug",
-    price: 12.5,
-    category: "Home",
-    image: "https://picsum.photos/seed/mug/600/400",
-  },
-];
+const API_URL = "https://fakestoreapi.com/products";
 
 const Products = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(API_URL);
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch products");
+        }
+
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   return (
-    <div>
-      <h1>Products</h1>
-      <ProductGrid products={testProducts} />
-    </div>
+    <>
+      <h1 className="text-3xl font-bold text-slate-900 mb-6">Products</h1>
+
+      {loading && <p>Loading products...</p>}
+
+      {error && <p className="text-red-600">{error}</p>}
+
+      {!loading && !error && products.length === 0 && <p>No products found.</p>}
+
+      {!loading && !error && products.length > 0 && (
+        <ProductGrid products={products} />
+      )}
+    </>
   );
 };
 
